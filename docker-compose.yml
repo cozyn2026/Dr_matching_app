@@ -5,8 +5,6 @@ services:
       POSTGRES_DB: dr_matching
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app_local_password
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
