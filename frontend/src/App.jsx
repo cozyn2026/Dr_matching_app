@@ -26,6 +26,8 @@ async function request(path, options = {}) {
 
 export default function App() {
   const [laboratories, setLaboratories] = useState([]);
+  const [keyword, setKeyword] = useState('');
+  const [activeKeyword, setActiveKeyword] = useState('');
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,11 +35,12 @@ export default function App() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
-  async function loadLaboratories() {
+  async function loadLaboratories(searchTerm = activeKeyword) {
     setLoading(true);
     setError('');
     try {
-      setLaboratories(await request('/api/laboratories'));
+      const query = searchTerm.trim() ? `?keyword=${encodeURIComponent(searchTerm.trim())}` : '';
+      setLaboratories(await request(`/api/laboratories${query}`));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -46,8 +49,20 @@ export default function App() {
   }
 
   useEffect(() => {
-    loadLaboratories();
+    loadLaboratories('');
   }, []);
+
+  async function searchLaboratories(event) {
+    event.preventDefault();
+    setActiveKeyword(keyword.trim());
+    await loadLaboratories(keyword);
+  }
+
+  async function clearSearch() {
+    setKeyword('');
+    setActiveKeyword('');
+    await loadLaboratories('');
+  }
 
   function changeField(event) {
     const { name, value, checked, type } = event.target;
@@ -156,8 +171,14 @@ export default function App() {
             <div><div className="eyebrow">CATALOG</div><h2>登録済みの研究室</h2></div>
             <span className="count">{laboratories.length} 件</span>
           </div>
+          <form className="search-form" onSubmit={searchLaboratories} role="search">
+            <label htmlFor="laboratory-search">キーワード</label>
+            <input id="laboratory-search" type="search" value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="大学名、研究室名、研究分野など" />
+            <button className="button primary" type="submit" disabled={loading}>検索</button>
+            {activeKeyword && <button className="button secondary" type="button" onClick={clearSearch} disabled={loading}>解除</button>}
+          </form>
           {loading ? <div className="empty-state">研究室を読み込んでいます…</div> : laboratories.length === 0 ? (
-            <div className="empty-state"><span className="empty-icon">＋</span><strong>研究室はまだ登録されていません</strong><p>上のフォームから最初の研究室を登録してください。</p></div>
+            <div className="empty-state"><span className="empty-icon">{activeKeyword ? '⌕' : '＋'}</span><strong>{activeKeyword ? '一致する研究室はありません' : '研究室はまだ登録されていません'}</strong><p>{activeKeyword ? '別のキーワードで検索してください。' : '上のフォームから最初の研究室を登録してください。'}</p></div>
           ) : (
             <div className="laboratory-list">
               {laboratories.map((laboratory) => (

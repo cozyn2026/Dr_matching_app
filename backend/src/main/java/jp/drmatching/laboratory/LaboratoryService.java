@@ -17,6 +17,13 @@ public class LaboratoryService {
         return repository.findAll().stream().map(Laboratory::toResponse).toList();
     }
 
+    public List<LaboratoryResponse> search(String keyword) {
+        String normalized = keyword == null ? "" : keyword.strip();
+        if (normalized.isEmpty()) return findAll();
+        String escaped = normalized.replace("!", "!!").replace("%", "!%").replace("_", "!_");
+        return repository.search(escaped).stream().map(Laboratory::toResponse).toList();
+    }
+
     @Transactional
     public LaboratoryResponse create(LaboratoryRequest request) {
         return repository.save(new Laboratory(request)).toResponse();
