@@ -13,3 +13,12 @@ spring:
     enabled: true
 server:
   port: 8080
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: ${SESSION_COOKIE_SECURE:false}
+app:
+  admin:
+    api-key: ${DR_MATCHING_ADMIN_KEY:local-admin-key-change-me}

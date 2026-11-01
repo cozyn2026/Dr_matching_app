@@ -19,6 +19,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dr_matching
       SPRING_DATASOURCE_USERNAME: app
       SPRING_DATASOURCE_PASSWORD: app_local_password
+      DR_MATCHING_ADMIN_KEY: ${DR_MATCHING_ADMIN_KEY:-local-admin-key-change-me}
     ports:
       - "8080:8080"
     depends_on:
@@ -27,6 +28,8 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8080
     ports:
       - "5173:5173"
     depends_on:

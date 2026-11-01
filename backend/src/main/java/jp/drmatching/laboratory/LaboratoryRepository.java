@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface LaboratoryRepository extends JpaRepository<Laboratory, Long> {
+    java.util.List<Laboratory> findAllByUniversityNameIgnoreCaseOrderByIdAsc(String universityName);
+    java.util.Optional<Laboratory> findByIdAndUniversityNameIgnoreCase(Long id, String universityName);
+
     @Query("""
             select l from Laboratory l
             where lower(l.universityName) like lower(concat('%', :keyword, '%')) escape '!'
