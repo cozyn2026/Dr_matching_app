@@ -287,7 +287,6 @@ export default function App() {
           <div className="eyebrow">LABORATORY DIRECTORY</div>
           <h1>大学院研究室を<br className="mobile-break" />探す</h1>
           <p>研究テーマから、自分に合う研究室を探してお気に入りに保存できます。</p>
-          <div className="stack-note"><span /> React <b>→</b> Spring Boot API <b>→</b> PostgreSQL</div>
         </section>
 
         {error && <div className="message error" role="alert">{error}</div>}
@@ -374,7 +373,6 @@ export default function App() {
             <div className="eyebrow">ADMINISTRATOR</div>
             <h1>会員申請を確認</h1>
             <p>研究者の会員申請を確認し、承認または却下します。</p>
-            <div className="stack-note"><span /> 管理キーで保護された開発用画面</div>
           </section>
           <ResearcherRegistrationAdmin />
           </>
